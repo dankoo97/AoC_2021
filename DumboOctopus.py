@@ -9,67 +9,55 @@ def adj(x, y):
 
 
 def flash(x, y, octo, b):
+    b.add((x, y))
     for dx, dy in adj(x, y):
+        if dx < 0 or dy < 0:
+            continue
         try:
             octo[dy][dx] += 1
-            if octo[dy][dx] >= 10 and not b[dy][dx]:
-                b[dy][dx] = True
+            if octo[dy][dx] >= 10 and (dx, dy) not in b:
                 flash(dx, dy, octo, b)
-        except:
+        except IndexError:
             pass
 
+
+def tick(octo):
+    """Returns the number of flashing octopus"""
+    b = set()
+    for y in range(len(octo)):
+        for x in range(len(octo[0])):
+            octo[y][x] += 1
+            if octo[y][x] >= 10 and (x, y) not in b:
+                flash(x, y, octo, b)
+
+    for x, y in b:
+        octo[y][x] = 0
+
+    return len(b)
+
+
 @timer
-def p1(ins):
-    octo = [[int(i) for i in r] for r in f]
-    t = 100
+def p1(ins, t=None):
+    octo = [[int(i) for i in r] for r in ins]
+    t = 100 if t is None else t
     s = 0
 
     for _ in range(t):
-        b = [[False for i in range(10)] for j in range(10)]
-        for y, row in enumerate(octo):
-            for x in range(len(row)):
-                octo[y][x] += 1
-                if octo[y][x] >= 10 and not b[y][x]:
-                    b[y][x] = True
-                    flash(x, y, octo, b)
-
-        for y in range(len(octo)):
-            for x in range(len(octo[0])):
-                if b[y][x]:
-                    s += 1
-                    octo[y][x] = 0
-
-    # print(*[''.join(str(i) for i in row) for row in octo], sep='\n')
+        s += tick(octo)
 
     return s
 
 
 @timer
 def p2(ins):
-    octo = [[int(i) for i in r] for r in f]
+    octo = [[int(i) for i in r] for r in ins]
     t = 0
 
     while True:
         t += 1
-        b = [[False for i in range(10)] for j in range(10)]
-        for y, row in enumerate(octo):
-            for x in range(len(row)):
-                octo[y][x] += 1
-                if octo[y][x] >= 10 and not b[y][x]:
-                    b[y][x] = True
-                    flash(x, y, octo, b)
-
-        for y in range(len(octo)):
-            for x in range(len(octo[0])):
-                if b[y][x]:
-                    octo[y][x] = 0
-
-        # print(t)
-        # print(*octo, sep='\n')
-        # print()
-
-        if all(all(row) for row in b):
+        if tick(octo) == 100:
             return t
+
 
 f = read_file("./Input/Input11").split('\n')
 p1(f)
