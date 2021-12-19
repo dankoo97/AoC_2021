@@ -16,4 +16,5 @@ def timer(func):
         print(f)
         print(end - start)
         print()
+        return f
     return wrapper
