@@ -30,12 +30,15 @@ class Scanner:
                 # Compare each beacon from each scanner
                 for a in self.beacons:
                     for b in other.beacons:
+                        # Assume a is absolute, find other.pos
                         c[orient, perm][tuple(da+o*b[dp] for da, o, dp in zip(a, orient, perm))] += 1
 
                 # If 12 beacons have the same comparison, k is the absolute position of the other scanner
                 for k, v in c[orient, perm].items():
                     if v >= 12:
                         other.pos = k
+
+                        # Reorient all beacons based on absolute position
                         other.reorient(orient, perm)
                         return other.pos
 
@@ -91,7 +94,6 @@ def manhattan(a, b):
 @timer
 def p1(s):
     beacons = set.union(*(scan.beacons for scan in s))
-
     return len(beacons)
 
 
