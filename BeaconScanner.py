@@ -1,4 +1,4 @@
-from advent import read_file, timer
+from advent import read_file, timer, manhattan
 from collections import defaultdict
 from itertools import permutations
 
@@ -85,10 +85,6 @@ def prep_scanners(ins):
         print("Total Mapped:", len(known))
 
     return s
-
-
-def manhattan(a, b):
-    return sum(abs(da - db) for da, db in zip(a, b))
 
 
 @timer

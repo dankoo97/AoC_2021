@@ -18,3 +18,7 @@ def timer(func):
         print()
         return f
     return wrapper
+
+
+def manhattan(a, b):
+    return sum(abs(da - db) for da, db in zip(a, b))
